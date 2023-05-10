@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Front\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\frontuser;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -20,7 +20,7 @@ class RegisteredUserController extends Controller
      */
     public function create(): View
     {
-        return view('auth.register');
+        return view('front.auth.register');
     }
 
     /**
@@ -36,7 +36,7 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
-        $user = User::create([
+        $user = frontuser::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
@@ -44,7 +44,7 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
+        Auth::guard('front')->login($user);
 
         return redirect(RouteServiceProvider::HOME);
     }
